@@ -1,0 +1,15 @@
+{
+  "name": "peaktree-anvil",
+  "version": "0.1.0",
+  "description": "Slack DM으로 headless Claude Code를 돌려 대상 repo에 draft PR을 올리는 봇 (Socket Mode, 화이트리스트, 자동 머지 없음)",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^3.19.0",
+    "dotenv": "^16.4.5",
+    "playwright": "^1.48.0"
+  }
+}
