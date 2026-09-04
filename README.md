@@ -22,6 +22,7 @@ Slack DM으로 코딩 작업을 요청하면, 서버에 상시 떠 있는 이 �
 - **셸 인젝션 방지**: Slack 텍스트는 `child_process.execFile`(배열 인자, 셸 미경유)로만 전달.
 - **동시 실행 직렬화**: 같은 워킹 디렉터리를 여러 작업이 동시에 건드리지 않도록 큐로 순서 강제.
 - **대화 연속성**: 채널당 진행 중 브랜치/세션을 30분간 기억해서 "응", "그렇게 해줘" 같은 후속 답변이 이전 작업에 이어붙는다. `새 작업`이라고 보내면 리셋.
+- **빠른 레인** (토큰 절약): `style:`, `text:`, `카피:` 등으로 시작하는 요청은 전체 맥락 파악 없이 저렴한 모델(기본 Haiku) + 탐색 억제 지침 + 턴 상한으로 처리한다. 사소한 문구/스타일 수정에 전체 코드베이스를 훑느라 토큰이 새는 걸 막는다. resume 후속 답변은 원래 작업의 레인을 그대로 물려받는다.
 - **fail-closed 신호**: claude 실행 시 `ANVIL_HEADLESS=1`을 넣는다. 대상 repo에 이 값을 읽는 훅(위험 명령 자동 차단 등)이 있으면 활용되고, 없으면 무시된다.
 - **디자인 목업 스크린샷** (opt-in): 웹 프론트엔드 repo라면 화면 관련 작업 시 정적 HTML 목업을 만들어 스크린샷을 Slack / PR 본문에 첨부.
 
@@ -53,6 +54,9 @@ Slack DM으로 코딩 작업을 요청하면, 서버에 상시 떠 있는 이 �
 | `CLAUDE_SLASH_COMMAND` | | 대상 repo의 커스텀 슬래시 커맨드 (예: `/start`). 비우면 요청 텍스트 그대로 |
 | `BRANCH_PREFIX` / `BASE_BRANCH` | | 기본 `anvil` / `main` |
 | `TASK_TIMEOUT_MS` / `SESSION_TTL_MS` | | 기본 15분 / 30분 |
+| `FAST_LANE_PATTERN` | | 빠른 레인 트리거 정규식. 기본 `^(텍스트\|문구\|카피\|스타일\|copy\|text\|style\|css)\s*[:：]\s*` |
+| `FAST_MODEL` | | 빠른 레인 모델. 기본 `claude-haiku-4-5-20251001` |
+| `FAST_MAX_TURNS` / `FAST_INSTRUCTION` | | 빠른 레인 턴 상한(기본 15) / 탐색 억제 지침 덮어쓰기 |
 | `PREVIEW_ENABLED` | | 디자인 목업 스크린샷 기능 on/off (기본 `false`) |
 | `PREVIEW_VIEWPORT` / `PREVIEW_UI_PATTERN` / `PREVIEW_INSTRUCTION` | | 프리뷰 세부 설정 |
 
